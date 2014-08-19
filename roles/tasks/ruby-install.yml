@@ -1,0 +1,27 @@
+---
+- name: install build-essential
+  apt: name=build-essential state=present
+
+- name: install checkinstall
+  apt: name=checkinstall state=present
+
+- name: get ruby-install tarball
+  shell: wget -O ruby-install-0.4.3.tar.gz https://github.com/postmodern/ruby-install/archive/v0.4.3.tar.gz
+  args:
+    creates: /usr/local/bin/ruby-install
+
+- name: unpack ruby-install tarball
+  shell: tar -xzvf ruby-install-0.4.3.tar.gz
+  args:
+    creates: /usr/local/bin/ruby-install
+
+- name: install ruby-install
+  shell: cd ruby-install-0.4.3/; sudo checkinstall -y
+  args:
+    creates: /usr/local/bin/ruby-install
+
+- name: clean up ruby-install pt 1
+  shell: rm -rf ruby-install-0.4.3
+
+- name: clean up ruby-install pt 2
+  shell: rm -rf ruby-install-0.4.3.tar.gz

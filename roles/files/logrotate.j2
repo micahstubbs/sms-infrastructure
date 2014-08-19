@@ -1,0 +1,6 @@
+var/log/app/sms-{{ type }}.log {
+  daily
+  rotate 5
+  size 10M
+  create 0644 app app
+}

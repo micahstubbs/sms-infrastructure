@@ -1,0 +1,77 @@
+---
+- hosts: all
+  remote_user: '{{ user }}'
+  sudo: yes
+
+  tasks:
+    - name: add user
+      user: name=app
+
+    - name: update apt
+      apt:
+        update_cache: yes
+
+    - name: upgrade apt
+      apt:
+        upgrade: full
+
+    - include: tasks/ruby-install.yml
+
+    - name: install ruby
+      shell: ruby-install ruby -i /home/app/ruby
+      args:
+        creates: /home/app/ruby/bin/ruby
+
+    - name: set ruby owner
+      shell: 'chown -R app: /home/app/ruby'
+
+    - name: create .gemrc
+      shell: 'su app -c "echo \"gem: --no-ri --no-rdoc\" > ~/.gemrc"'
+      args:
+        creates: /home/app/.gemrc
+
+    - name: install git
+      apt: name=git state=present
+
+    - name: install libxml2-dev
+      apt: name=libxml2-dev state=present
+
+    - name: install libxslt-dev
+      apt: name=libxslt-dev state=present
+
+    - name: install aws-sdk and dotenv
+      shell: su app -c '~/ruby/bin/gem install aws-sdk dotenv'
+
+    - name: copy app init script over
+      template: src=files/init.j2 dest=/home/app/init mode=755 group=app owner=app
+
+    - name: make app init script executable
+      shell: chmod +x /home/app/init
+
+    - name: copy app upstart config over
+      template: src=files/upstart.conf.j2 dest=/etc/init/sms-{{ type }}.conf
+
+    - name: create app log directory
+      file: dest=/var/log/app mode=755 owner=app group=app state=directory
+
+    - name: create app log file
+      shell: touch /var/log/app/sms-{{ type }}.log
+      args:
+        creates: /var/log/app/sms-{{ type }}.log
+
+    - name: make app owner of log file
+      shell: 'chown app: /var/log/app/sms-{{ type }}.log'
+
+    - name: copy over logrotate config file
+      template: src=files/logrotate.j2 dest=/etc/logrotate.d/sms-{{ type }}
+
+    - name: copy over .env to env-orig
+      template: src='../.env' dest=/home/app/env-orig mode=0755 group=app owner=app
+
+    - name: copy over .env to .env
+      template: src='../.env' dest=/home/app/.env mode=0755 group=app owner=app
+
+    - include: tasks/iptables.yml
+
+    - name: reboot server
+      shell: reboot

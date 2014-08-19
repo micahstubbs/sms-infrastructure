@@ -1,0 +1,23 @@
+description "go-server"
+
+setuid app
+setgid app
+
+console output
+
+start on (net-device-up
+          and local-filesystems
+          and runlevel [2345])
+
+stop on runlevel [!2345]
+respawn
+
+pre-start script
+  cd /home/app
+  /home/app/init
+end script
+
+script
+  cd /home/app
+  /home/app/sms-{{ type }} >> /var/log/app/sms-{{ type }}.log
+end script

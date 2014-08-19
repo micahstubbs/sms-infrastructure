@@ -1,0 +1,51 @@
+#!/home/app/ruby/bin/ruby
+
+$stdout.reopen('/var/log/app/sms-{{ type }}.log', 'a')
+$stderr.reopen('/var/log/app/sms-{{ type }}.log', 'a')
+
+require 'aws-sdk'
+require 'dotenv'
+require 'logger'
+
+log = Logger.new(STDOUT)
+
+Dotenv.load
+
+AWS.config(
+  :access_key_id => ENV['ACCESS_KEY_ID'],
+  :secret_access_key => ENV['SECRET_ACCESS_KEY']
+)
+
+s3 = AWS::S3.new
+
+begin
+  log.info('downloading the app binary...')
+
+  obj = s3.buckets["vip-sms-#{ENV['ENVIRONMENT']}"].objects['sms-{{ type }}']
+
+  File.open('/home/app/sms-{{ type }}', 'wb') do |file|
+    obj.read do |chunk|
+       file.write(chunk)
+    end
+  end
+
+  system('chmod +x /home/app/sms-{{ type }}')
+
+  log.info('downloading the env file and merging with env-orig...')
+
+  env = IO.read('/home/app/env-orig')
+
+  app_env = s3.buckets["vip-sms-#{ENV['ENVIRONMENT']}"].objects['sms-{{ type }}-env'].read
+
+  new_env = env + app_env
+
+  IO.write('/home/app/.env', new_env)
+rescue AWS::S3::Errors::NoSuchKey
+  log.fatal('binary or env file not found, exiting...')
+  exit(1)
+rescue => e
+  log.debug e.inspect
+  log.debug e.backtrace
+  sleep 1
+  retry
+end

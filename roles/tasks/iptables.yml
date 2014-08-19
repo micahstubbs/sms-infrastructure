@@ -1,0 +1,26 @@
+---
+- name: port 8080 <-> 80 pt 1
+  shell: iptables -A INPUT -i eth0 -p tcp --dport 80 -j ACCEPT
+  args:
+    creates: /etc/network/if-pre-up.d/iptables-load
+
+- name: port 8080 <-> 80 pt 2
+  shell: iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
+  args:
+    creates: /etc/network/if-pre-up.d/iptables-load
+
+- name: port 8080 <-> 80 pt 3
+  shell: iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080
+  args:
+    creates: /etc/network/if-pre-up.d/iptables-load
+
+- name: port 8080 <-> 80 pt 4
+  shell: iptables-save > /etc/iptables.conf
+  args:
+    creates: /etc/network/if-pre-up.d/iptables-load
+
+- name: port 8080 <-> 80 pt 5
+  copy: src=files/iptables-load dest=/etc/network/if-pre-up.d/iptables-load
+
+- name: port 8080 <-> 80 pt 6
+  shell: chmod +x /etc/network/if-pre-up.d/iptables-load
