@@ -64,7 +64,7 @@ module Helper
     puts "Waiting for instance to stop"
     wait_for_output(:stopped) { instance.status }
 
-    image = instance.create_image("vip-sms-app-#{type}-#{environment}-#{Time.now.strftime("%d-%m-%y--%H-%M-%S")}")
+    image = instance.create_image("vip-sms-app-#{type}-#{environment}-#{Time.now.strftime("%m-%d-%y--%H-%M-%S")}")
     instance.terminate
 
     puts "Created image: #{image.name} with id: #{image.id}"
