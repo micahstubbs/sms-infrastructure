@@ -1,3 +1,5 @@
 .env
 .vagrant
+machine
 *.tfstate
+*.tfstate.backup
