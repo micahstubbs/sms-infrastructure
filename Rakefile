@@ -3,6 +3,33 @@ require_relative 'lib/helper'
 require 'aws-sdk'
 require 'dotenv/tasks'
 
+desc 'Upload latest tfstate'
+task :upload_tfstate, [:bucket] => :aws_auth do |_, args|
+  bucket = args.bucket or
+    fail 'You must specify a bucket name: `rake upload_tfstate[BUCKET]`'
+
+  s3 = AWS::S3.new
+  bucket = s3.buckets[args.bucket]
+  latest = bucket.objects.with_prefix('latest-').collect.first
+
+  latest.rename_to(latest.key.gsub('latest-' ,'')) unless latest.nil?
+
+  new_latest = IO.read('terraform.tfstate')
+  bucket.objects["latest-#{Time.now.strftime("%m-%d-%y--%H-%M-%S")}.tfstate"].write(new_latest)
+
+end
+
+desc 'Get latest tfstate'
+task :get_tfstate, [:bucket] => :aws_auth do |_, args|
+  bucket = args.bucket or
+    fail 'You must specify a bucket name: `rake get_tfstate[BUCKET]`'
+
+  s3 = AWS::S3.new
+  bucket = s3.buckets[args.bucket]
+  latest = bucket.objects.with_prefix('latest-').collect.first
+  IO.write('terraform.tfstate', latest.read)
+end
+
 desc 'Build web image'
 task :build_web_image, [:environment] => :aws_auth do |_, args|
   environment = args.environment or

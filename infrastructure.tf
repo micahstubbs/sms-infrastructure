@@ -4,6 +4,11 @@ provider "aws" {
   region = "${var.region}"
 }
 
+resource "aws_s3_bucket" "terraform" {
+  bucket = "vip-sms-terraform"
+  acl = "private"
+}
+
 resource "aws_s3_bucket" "development" {
   bucket = "vip-sms-development"
   acl = "private"
