@@ -2,6 +2,7 @@ require_relative 'lib/helper'
 
 require 'aws-sdk'
 require 'dotenv/tasks'
+require 'fileutils'
 
 desc 'Upload latest tfstate'
 task :upload_tfstate, [:bucket] => :aws_auth do |_, args|
@@ -27,6 +28,7 @@ task :get_tfstate, [:bucket] => :aws_auth do |_, args|
   s3 = AWS::S3.new
   bucket = s3.buckets[args.bucket]
   latest = bucket.objects.with_prefix('latest-').collect.first
+  FileUtils.mv('terraform.tfstate', 'terraform.tfstate.old') if File.exists?('terraform.tfstate')
   IO.write('terraform.tfstate', latest.read)
 end
 
