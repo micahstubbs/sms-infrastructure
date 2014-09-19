@@ -23,6 +23,13 @@ module Helper
   def create_queue(name)
     sqs = AWS::SQS.new
     sqs.queues.create(name)
+    dead = sqs.queues.create("#{name}-dead")
+    sqs.client.set_queue_attributes({
+      queue_url: sqs.queues.named(name).url,
+      attributes: {
+        'RedrivePolicy' => "{\"maxReceiveCount\":\"3\", \"deadLetterTargetArn\":\"#{dead.arn}\"}"
+      }
+    })
   end
 
   def build_image(type, environment)
