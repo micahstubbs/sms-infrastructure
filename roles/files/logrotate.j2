@@ -1,6 +1,8 @@
 /var/log/app/sms-{{ type }}.log {
+  postrotate
+    service {{ type }} restart
+  endscript
   daily
-  rotate 5
-  size 10M
+  rotate 1
   create 0644 app app
 }
