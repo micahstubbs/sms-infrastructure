@@ -42,7 +42,7 @@ rake terraform
 - Create AWS SQS queues
 - Create AWS DynamoDB databases
 
-### Upload latest tfstate file to S3
+### Upload Latest tfstate File To S3
 ~~~~
 rake upload_tfstate\[bucket\]
 ~~~~
@@ -50,7 +50,7 @@ rake upload_tfstate\[bucket\]
 - Unmark the previous latest terraform.tfstate file as latest
 - Upload the new terraform.tfstate file marked as latest
 
-### Get the latest tfstate file from S3
+### Get The Latest tfstate File From S3
 ~~~~
 rake get_tfstate\[bucket\]
 ~~~~
