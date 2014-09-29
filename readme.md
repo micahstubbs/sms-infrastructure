@@ -30,7 +30,9 @@ To set your system up to develop this application...
     - Run `vagrant reload --provision` if your VMs do exist
 3. Use the rake command specified below to build new images
 4. Replace the appropriate ami ids in the Infrastructure.tfvars file
-5. Run `rake terraform`
+5. Run `rake get_tfstate\[bucket\]` to get the latest tfstate
+6. Run `rake terraform`
+7. Run `rake upload_tfstate\[bucket\]` to upload the new tfstate
 
 ## Commands
 ### Run Terraform
