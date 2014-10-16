@@ -99,10 +99,12 @@ resource "aws_instance" "web-staging" {
   instance_type = "m3.medium"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
-}
-
-output "web-staging-id" {
-  value = "${aws_instance.web-staging.id}"
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags {
+    Name = "vip-sms-app-staging-web"
+  }
 }
 
 resource "aws_instance" "worker-staging" {
@@ -110,10 +112,12 @@ resource "aws_instance" "worker-staging" {
   instance_type = "m3.medium"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
-}
-
-output "worker-staging-id" {
-  value = "${aws_instance.worker-staging.id}"
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags {
+    Name = "vip-sms-app-staging-worker"
+  }
 }
 
 resource "aws_instance" "web-1" {
@@ -121,6 +125,12 @@ resource "aws_instance" "web-1" {
   instance_type = "m3.medium"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags {
+    Name = "vip-sms-app-web"
+  }
 }
 
 resource "aws_instance" "web-2" {
@@ -128,10 +138,12 @@ resource "aws_instance" "web-2" {
   instance_type = "m3.medium"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
-}
-
-output "web-ids" {
-  value = "${aws_instance.web-1.id} x~x ${aws_instance.web-2.id}"
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags {
+    Name = "vip-sms-app-web"
+  }
 }
 
 resource "aws_instance" "worker-1" {
@@ -139,6 +151,12 @@ resource "aws_instance" "worker-1" {
   instance_type = "m3.medium"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags {
+    Name = "vip-sms-app-worker"
+  }
 }
 
 resource "aws_instance" "worker-2" {
@@ -146,8 +164,10 @@ resource "aws_instance" "worker-2" {
   instance_type = "m3.medium"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
-}
-
-output "worker-ids" {
-  value = "${aws_instance.worker-1.id} x~x ${aws_instance.worker-2.id}"
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags {
+    Name = "vip-sms-app-worker"
+  }
 }

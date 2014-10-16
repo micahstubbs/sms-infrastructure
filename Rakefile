@@ -62,18 +62,6 @@ task :terraform => :aws_auth do
             -var 'secret_key=#{ENV['SECRET_ACCESS_KEY']}'
          ")
 
-  puts 'Tagging instances'
-  web_ids = `terraform output web-ids`.strip.split(" x~x ")
-  worker_ids = `terraform output worker-ids`.strip.split(" x~x ")
-  web_staging_id = `terraform output web-staging-id`.strip
-  worker_staging_id = `terraform output worker-staging-id`.strip
-
-  ec2 = AWS::EC2.new
-  web_ids.each { |id| ec2.instances[id].add_tag("Name", value: 'vip-sms-app-web') }
-  worker_ids.each { |id| ec2.instances[id].add_tag("Name", value: 'vip-sms-app-worker') }
-  ec2.instances[web_staging_id].add_tag("Name", value: 'vip-sms-app-staging-web')
-  ec2.instances[worker_staging_id].add_tag("Name", value: 'vip-sms-app-staging-worker')
-
   puts "Creating queues (if they don't already exist)"
   Helper.create_queue('vip-sms-app-production')
   Helper.create_queue('vip-sms-app-staging')
