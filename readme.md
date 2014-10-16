@@ -4,7 +4,7 @@
 Automate the testing & creation of Infrastructure for the VIP SMS app
 
 ## Requirements
-- [Terraform](http://www.terraform.io)
+- [Terraform](http://www.terraform.io) 0.3
 - [Vagrant](http://www.vagrantup.com)
 - [Ansible](http://www.ansible.com/home)
 - Ruby 2.1.2
