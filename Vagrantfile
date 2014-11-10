@@ -12,6 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     web.vm.provision "ansible" do |ansible|
       ansible.playbook = "roles/all.yml"
+      ansible.verbose = "v"
       ansible.extra_vars = { user: "vagrant", type: "web", env: "development" }
     end
   end
@@ -19,6 +20,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.define "worker" do |web|
     web.vm.provision "ansible" do |ansible|
       ansible.playbook = "roles/all.yml"
+      ansible.verbose = "v"
       ansible.extra_vars = { user: "vagrant", type: "worker", env: "development" }
     end
   end
