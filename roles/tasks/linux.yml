@@ -1,0 +1,14 @@
+- name: copy over sysctl.conf
+  copy: src=files/sysctl.conf dest=/etc/sysctl.conf force=yes
+
+- name: add soft file limit
+  lineinfile: dest=/etc/security/limits.conf regexp="^.*soft nofile.*" line="* soft nofile 1048576"
+
+- name: add hard file limit
+  lineinfile: dest=/etc/security/limits.conf regexp="^.*hard nofile.*" line="* hard nofile 1048576"
+
+- name: use limits pt1
+  lineinfile: dest=/etc/pam.d/common-session regexp="session required pam_limits\.so" line="session required pam_limits.so"
+
+- name: use limits pt2
+  lineinfile: dest=/etc/pam.d/common-session-noninteractive regexp="session required pam_limits\.so" line="session required pam_limits.so"
