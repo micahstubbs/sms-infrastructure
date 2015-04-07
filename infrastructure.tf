@@ -72,31 +72,10 @@ resource "aws_elb" "1" {
   instances = ["${aws_instance.web-1.id}", "${aws_instance.web-2.id}"]
 }
 
-resource "aws_elb" "2" {
-  name = "vip-sms-app-lb2"
-  availability_zones= ["us-east-1a", "us-east-1c", "us-east-1d"]
-
-  listener {
-    instance_port = 80
-    instance_protocol = "http"
-    lb_port = 80
-    lb_protocol = "http"
-  }
-
-  health_check {
-    timeout = 2
-    healthy_threshold = 2
-    unhealthy_threshold = 2
-    target = "HTTP:80/status"
-    interval = 10
-  }
-
-  instances = ["${aws_instance.web-1.id}", "${aws_instance.web-2.id}"]
-}
-
 resource "aws_instance" "web-staging" {
   ami = "${var.web_staging_ami}"
   instance_type = "m3.medium"
+  availability_zone = "us-east-1a"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
   lifecycle {
@@ -123,6 +102,7 @@ resource "aws_instance" "worker-staging" {
 resource "aws_instance" "web-1" {
   ami = "${var.web_production_ami}"
   instance_type = "m3.medium"
+  availability_zone = "us-east-1a"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
   lifecycle {
@@ -136,6 +116,7 @@ resource "aws_instance" "web-1" {
 resource "aws_instance" "web-2" {
   ami = "${var.web_production_ami}"
   instance_type = "m3.medium"
+  availability_zone = "us-east-1c"
   key_name = "vip-sms"
   security_groups = ["${aws_security_group.main.name}"]
   lifecycle {
