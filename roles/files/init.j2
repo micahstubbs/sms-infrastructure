@@ -3,7 +3,7 @@
 $stdout.reopen('/var/log/app/sms-{{ type }}.log', 'a')
 $stderr.reopen('/var/log/app/sms-{{ type }}.log', 'a')
 
-require 'aws-sdk'
+require 'aws-sdk-v1'
 require 'dotenv'
 require 'logger'
 
