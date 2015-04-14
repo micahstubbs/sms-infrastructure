@@ -42,7 +42,7 @@
       apt: name=libxslt-dev state=present
 
     - name: install aws-sdk and dotenv
-      shell: su app -c '~/ruby/bin/gem install aws-sdk dotenv'
+      shell: su app -c "~/ruby/bin/gem install aws-sdk-v1 dotenv"
 
     - name: copy app init script over
       template: src=files/init.j2 dest=/home/app/init mode=755 group=app owner=app

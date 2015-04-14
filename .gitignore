@@ -2,3 +2,4 @@
 .vagrant
 machine
 *.tfstate*
+.ruby-version

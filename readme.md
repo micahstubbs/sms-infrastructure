@@ -1,12 +1,16 @@
 # SMS-Infrastructure
 
 ## Description
-Automate the testing & creation of Infrastructure for the VIP SMS app
+Automate the testing & creation of Infrastructure for the VIP SMS app.
+
+This project uses Terraform to control AWS infrastructure (ie, load balancers, so many worker nodes, security groups, etc), and ansible to create AMI images for the servers that run the web and worker processes (ie, install ruby, gems, other server infrastructure). If you need to update the base web or worker images because of new libraries or new keys, you build them with the rake tasks outlined below, get the current terraform state with the get_tfstate task, and then run the terraform rake task, and then upload the new terraform state at the end.
+
+To deploy new versions of either the web or worker apps, you use the deploy tasks from those projects, see their readmes.
 
 ## Requirements
 - [Terraform](http://www.terraform.io) 0.3
 - [Vagrant](http://www.vagrantup.com)
-- [Ansible](http://www.ansible.com/home)
+- [Ansible](http://docs.ansible.com/intro_installation.html#getting-ansible) or `brew install ansible`
 - Ruby 2.1.2
 - A .env file with the following items...
 
@@ -20,17 +24,18 @@ ENVIRONMENT={{ env }}
 To set your system up to develop this application...
 
 1. Make sure you have everything from the requirements section
+2, For terraform, download the version for your platform and add the executables to your PATH
 2. Run `bundle`
 
 ## Workflows
 ### Modify The Web / Worker Image
-1. Make modifications to the ansible script
+1. Make modifications to the ansible script (the files in /roles), or the infrastructure recipes in infrastructure.tf.
 2. Test locally using vagrant
     - Run `vagrant up` if your VMs do not exist
     - Run `vagrant reload --provision` if your VMs do exist
 3. Use the rake command specified below to build new images
 4. Replace the appropriate ami ids in the Infrastructure.tfvars file
-5. Run `rake get_tfstate\[bucket\]` to get the latest tfstate
+5. Run `rake get_tfstate\[bucket\]` to get the latest tfstate (bucket is usually named vip-sms-terraform)
 6. Run `rake terraform`
 7. Run `rake upload_tfstate\[bucket\]` to upload the new tfstate
 
