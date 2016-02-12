@@ -1,3 +1,5 @@
+**THIS REPOSITORY IS NO LONGER USED! Please see [sms-compose](https://github.com/votinginfoproject/sms-compose) for information on building and deploying the VIP SMS app.**
+
 # SMS-Infrastructure
 
 ## Description
